@@ -92,8 +92,20 @@ positions are allowed."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") 'haskell-indentation-newline-and-indent)
     (define-key map (kbd "<backtab>") 'haskell-indentation-indent-backwards)
+    (define-key map (kbd "<backspace>") 'haskell-indentation-unindent-or-delete-backwards)
     map)
   "Keymap for `haskell-indentation-mode'.")
+
+(defun haskell-indentation-at-beginning-of-line ()
+  (and
+   (not (= (current-column) 0))
+   (= (haskell-indentation-current-indentation) (current-column))))
+
+(defun haskell-indentation-unindent-or-delete-backwards ()
+  (interactive)
+  (if (haskell-indentation-at-beginning-of-line)
+      (haskell-indentation-indent-backwards)
+    (backward-delete-char 1)))
 
 ;;;###autoload
 (define-minor-mode haskell-indentation-mode
